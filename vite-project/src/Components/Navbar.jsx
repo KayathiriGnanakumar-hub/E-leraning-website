@@ -1,14 +1,16 @@
 import { Link, useLocation } from "react-router-dom";
+import { getCartCount } from "../utils/cartStorage";
 
 export default function Navbar() {
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const cartCount = getCartCount();
 
   return (
     <nav className="fixed top-0 w-full bg-white/80 backdrop-blur shadow z-50">
       <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-        
-        {/* Logo */}
+
+        {/* Logo (UNCHANGED) */}
         <div className="flex items-center gap-3">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -27,15 +29,15 @@ export default function Navbar() {
 
           {isHome && (
             <>
-              <a href="#home" className="hover:text-indigo-600">Home</a>
-              <a href="#courses" className="hover:text-indigo-600">Courses</a>
-              <a href="#register" className="hover:text-indigo-600">Register</a>
-              <a href="#login" className="hover:text-indigo-600">Login</a>
-              <a href="#contact" className="hover:text-indigo-600">Contact</a>
+              <a href="#home">Home</a>
+              <a href="#courses">Courses</a>
+              <a href="#register">Register</a>
+              <a href="#login">Login</a>
+              <a href="#contact">Contact</a>
             </>
           )}
 
-          {/* ✅ MODERN CART ICON */}
+          {/* ✅ OLD CART ICON (PROFESSIONAL) */}
           <Link to="/cart" className="relative group">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -52,9 +54,9 @@ export default function Navbar() {
               />
             </svg>
 
-            {/* Badge (0 for now, future-ready) */}
+            {/* Cart Count Badge */}
             <span className="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs font-semibold w-5 h-5 rounded-full flex items-center justify-center">
-              0
+              {cartCount}
             </span>
           </Link>
 
