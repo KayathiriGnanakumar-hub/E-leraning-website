@@ -1,37 +1,50 @@
+import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 export default function Login() {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
-    <section id="login" className="py-20 bg-white px-4 sm:px-6">
-      <div className="max-w-md w-full mx-auto bg-white p-6 sm:p-10 rounded-3xl shadow-lg">
-        <h2 className="text-2xl sm:text-3xl font-bold text-center text-indigo-700 mb-2">
+    <section
+      id="login"   // ✅ FIX: added id ONLY
+      className="min-h-[80vh] flex items-center justify-center bg-[#F5F3FF] px-4"
+    >
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+
+        <h2 className="text-2xl font-bold text-center text-purple-700 mb-1">
           Welcome Back
         </h2>
-        <p className="text-center text-gray-500 mb-8 text-sm sm:text-base">
-          Login to continue learning
+        <p className="text-center text-sm text-slate-600 mb-6">
+          Login to continue your learning journey
         </p>
 
-        <div className="space-y-4">
+        <input
+          type="email"
+          placeholder="Email address"
+          className="w-full mb-4 px-4 py-2 rounded-md border
+          focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+
+        <div className="relative mb-4">
           <input
-            type="email"
-            placeholder="Email Address"
-            className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-indigo-400"
-          />
-          <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Password"
-            className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+            className="w-full px-4 py-2 rounded-md border
+            focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
+          <span
+            className="absolute right-4 top-1/2 -translate-y-1/2
+            text-slate-500 cursor-pointer"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
         </div>
 
-        <button className="w-full mt-8 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-xl font-semibold hover:opacity-90 transition">
+        <button className="w-full py-2 rounded-md font-medium text-white
+        bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90">
           Login
         </button>
-
-        <p className="text-center text-sm text-gray-500 mt-4">
-          New here?{" "}
-          <a href="#register" className="text-indigo-600 font-medium">
-            Create an account
-          </a>
-        </p>
       </div>
     </section>
   );

@@ -1,98 +1,80 @@
+import dbms from "../assets/dbms.jpg";
+import devops from "../assets/devops.jpg";
+import dsa from "../assets/dsa.jpg";
+import java from "../assets/java.jpg";
+import jquery from "../assets/jquery.jpg";
+import js from "../assets/js.jpg";
+import ml from "../assets/ml.jpg";
+import mobile from "../assets/mobile.jpg";
+import python from "../assets/python.jpg";
+import reactImg from "../assets/reactImg.jpg"
+import ui from "../assets/ui.jpg";
+import backend from "../assets/backend.jpg";
+import cloud from "../assets/cloud.jpg";
+import angular from "../assets/angular.jpg";
+import cyber from "../assets/cyber.jpg";
+import test from "../assets/test.jpg";
+
 const courses = [
-  {
-    title: "Full Stack Development",
-    img: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    title: "Frontend with React",
-    img: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    title: "Backend & APIs",
-    img: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    title: "Data Science",
-    img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    title: "Artificial Intelligence",
-    img: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    title: "Cyber Security",
-    img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    title: "Cloud Computing",
-    img: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    title: "UI / UX Design",
-    img: "https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    title: "Mobile App Development",
-    img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    title: "Java Programming",
-    img: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    title: "Web Development",
-    img: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    title: "Machine Learning",
-    img: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=800&q=80",
-  }
+  { title: "DBMS", image: dbms, price: "₹499" },
+  { title: "DevOps", image: devops, price: "₹699" },
+  { title: "DSA", image: dsa, price: "₹599" },
+  { title: "Java", image: java, price: "₹499" },
+  { title: "jQuery", image: jquery, price: "₹399" },
+  { title: "JavaScript", image: js, price: "₹499" },
+  { title: "Machine Learning", image: ml, price: "₹799" },
+  { title: "Mobile Development", image: mobile, price: "₹699" },
+  { title: "Python", image: python, price: "₹499" },
+  { title: "React", image: reactImg, price: "₹599" },
+  { title: "UI / UX", image: ui, price: "₹399" },
+  { title: "Backend Development", image: backend, price: "₹599" },
+  { title: "Cloud Computing", image: cloud, price: "₹699" },
+  { title: "Angular", image: angular, price: "₹599" },
+  { title: "Cyber Security", image: cyber, price: "₹699" },
+  { title: "Software Testing", image: test, price: "₹499" },
+
+
 ];
 
 export default function Courses() {
   return (
-    <section
-      id="courses"
-      className="py-20 bg-gradient-to-b from-white to-indigo-50 px-4 sm:px-6"
-    >
-      <h2 className="text-2xl sm:text-4xl font-bold text-center mb-14 text-indigo-700">
-        Our Courses
-      </h2>
+    <div id="courses">
+      {/* PAGE TITLE */}
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
+          Our Courses
+        </h1>
+      </div>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-10">
-        {courses.map((c, i) => (
+      {/* COURSES GRID */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {courses.map((course, index) => (
           <div
-            key={i}
-            className="group bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition duration-300"
+            key={index}
+            className="bg-white rounded-xl shadow hover:shadow-lg transition p-4 flex flex-col"
           >
-            {/* Image */}
-            <div className="relative h-44 sm:h-48">
+            <div className="h-32 sm:h-36 mb-3 overflow-hidden rounded-md">
               <img
-                src={c.img}
-                alt={c.title}
-                className="h-full w-full object-cover"
+                src={course.image}
+                alt={course.title}
+                className="w-full h-full object-cover"
               />
-
-              {/* Image overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
             </div>
 
-            {/* Content */}
-            <div className="p-5 sm:p-6 flex flex-col gap-3">
-              <h3 className="text-base sm:text-lg font-semibold text-gray-800">
-                {c.title}
-              </h3>
+            <h3 className="text-sm font-semibold mb-1 flex-grow">
+              {course.title}
+            </h3>
 
-              <a
-                href="#register"
-                className="mt-4 inline-block text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2 rounded-xl font-medium hover:opacity-90 transition"
-              >
-                Apply Now
-              </a>
-            </div>
+            <p className="text-purple-700 text-sm mb-3">
+              {course.price}
+            </p>
+
+            <button className="w-full bg-purple-700 text-white py-2 rounded-md text-sm hover:bg-purple-800 transition">
+              Enroll
+            </button>
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }

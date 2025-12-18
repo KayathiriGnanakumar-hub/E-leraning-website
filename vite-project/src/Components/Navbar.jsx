@@ -1,16 +1,27 @@
-import { Link, useLocation } from "react-router-dom";
-import { getCartCount } from "../utils/cartStorage";
-
+import { Link, useLocation, useNavigate } from "react-router-dom";
 export default function Navbar() {
   const location = useLocation();
-  const isHome = location.pathname === "/";
-  const cartCount = getCartCount();
+  const navigate = useNavigate();
+
+  const goToSection = (id) => {
+    if (location.pathname !== "/") {
+      navigate("/");
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const navClass =
+    "cursor-pointer hover:text-indigo-600 transition";
 
   return (
     <nav className="fixed top-0 w-full bg-white/80 backdrop-blur shadow z-50">
       <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
 
-        {/* Logo (UNCHANGED) */}
+        {/* LOGO (UNCHANGED) */}
         <div className="flex items-center gap-3">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -24,42 +35,28 @@ export default function Navbar() {
           <h1 className="text-3xl font-bold text-indigo-600">Learnix</h1>
         </div>
 
-        {/* Links */}
-        <div className="hidden md:flex items-center gap-8 text-lg font-medium">
+        {/* LINKS (FIXED) */}
+        <div className="space-x-8 font-medium text-lg hidden md:flex">
+          <span className={navClass} onClick={() => goToSection("home")}>
+            Home
+          </span>
+          <span className={navClass} onClick={() => goToSection("courses")}>
+            Courses
+          </span>
+          <span className={navClass} onClick={() => goToSection("register")}>
+            Register
+          </span>
+          <span className={navClass} onClick={() => goToSection("login")}>
+            Login
+          </span>
+          <span className={navClass} onClick={() => goToSection("contact")}>
+            Contact
+          </span>
 
-          {isHome && (
-            <>
-              <a href="#home">Home</a>
-              <a href="#courses">Courses</a>
-              <a href="#register">Register</a>
-              <a href="#login">Login</a>
-              <a href="#contact">Contact</a>
-            </>
-          )}
-
-          {/* ✅ OLD CART ICON (PROFESSIONAL) */}
-          <Link to="/cart" className="relative group">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.6}
-              stroke="currentColor"
-              className="w-7 h-7 text-gray-700 group-hover:text-indigo-600 transition"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M2.25 3h1.386a.75.75 0 01.728.586L5.25 7.5m0 0h13.5l-1.35 6.75a.75.75 0 01-.735.6H8.25a.75.75 0 01-.735-.6L5.25 7.5zM8.25 21a.75.75 0 100-1.5.75.75 0 000 1.5zm9 0a.75.75 0 100-1.5.75.75 0 000 1.5z"
-              />
-            </svg>
-
-            {/* Cart Count Badge */}
-            <span className="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs font-semibold w-5 h-5 rounded-full flex items-center justify-center">
-              {cartCount}
-            </span>
+          {/* CART = ROUTE */}
+          <Link to="/cart" className={navClass}>
+            Cart
           </Link>
-
         </div>
       </div>
     </nav>
