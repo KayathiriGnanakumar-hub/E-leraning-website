@@ -1,23 +1,35 @@
+import {
+  FaInstagram,
+  FaLinkedinIn,
+  FaYoutube,
+  FaPinterestP,
+  FaTiktok,
+  FaApple,
+  FaGooglePlay,
+} from "react-icons/fa";
+
 export default function Footer() {
   return (
     <footer className="bg-gradient-to-r from-indigo-900 to-purple-900 text-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 grid gap-10 sm:gap-12 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+
+      {/* TOP FOOTER */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 grid gap-10 sm:grid-cols-2 md:grid-cols-4">
 
         {/* Brand */}
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">
-            EduPrime
+            Learnix
           </h2>
           <p className="text-sm leading-relaxed">
-            EduPrime is a modern e-learning platform helping learners gain
-            real-world skills through industry-ready courses and expert
+            Learnix is a modern e-learning platform empowering learners to build
+            real-world skills through industry-focused courses and expert-led
             guidance.
           </p>
         </div>
 
         {/* Quick Links */}
         <div>
-          <h3 className="text-base sm:text-lg font-semibold text-white mb-4">
+          <h3 className="text-base font-semibold text-white mb-4">
             Quick Links
           </h3>
           <ul className="space-y-2 text-sm">
@@ -30,7 +42,7 @@ export default function Footer() {
 
         {/* Popular Courses */}
         <div>
-          <h3 className="text-base sm:text-lg font-semibold text-white mb-4">
+          <h3 className="text-base font-semibold text-white mb-4">
             Popular Courses
           </h3>
           <ul className="space-y-2 text-sm">
@@ -41,9 +53,9 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Contact Info */}
+        {/* Contact */}
         <div>
-          <h3 className="text-base sm:text-lg font-semibold text-white mb-4">
+          <h3 className="text-base font-semibold text-white mb-4">
             Contact
           </h3>
           <ul className="space-y-2 text-sm">
@@ -55,10 +67,43 @@ export default function Footer() {
 
       </div>
 
-      {/* Bottom Bar */}
-      <div className="border-t border-white/20 py-5 sm:py-6 text-center text-xs sm:text-sm px-4">
-        © 2025 <span className="font-semibold text-white">EduPrime</span>.  
-        Built with  using React & Tailwind CSS.
+      {/* APP STORE BUTTONS */}
+      <div className="flex justify-center gap-4 pb-8">
+        <button className="flex items-center gap-2 border border-white/40 px-4 py-2 rounded-md hover:bg-white/10 transition">
+          <FaApple className="text-xl" />
+          <span className="text-sm">App Store</span>
+        </button>
+
+        <button className="flex items-center gap-2 border border-white/40 px-4 py-2 rounded-md hover:bg-white/10 transition">
+          <FaGooglePlay className="text-lg" />
+          <span className="text-sm">Google Play</span>
+        </button>
+      </div>
+
+      {/* SOCIAL ICONS */}
+      <div className="flex justify-center gap-4 pb-6">
+        <a className="bg-white text-black p-3 rounded-full hover:scale-110 transition">
+          <FaInstagram />
+        </a>
+        <a className="bg-white text-black p-3 rounded-full hover:scale-110 transition">
+          <FaLinkedinIn />
+        </a>
+        <a className="bg-white text-black p-3 rounded-full hover:scale-110 transition">
+          <FaYoutube />
+        </a>
+        <a className="bg-white text-black p-3 rounded-full hover:scale-110 transition">
+          <FaPinterestP />
+        </a>
+        <a className="bg-white text-black p-3 rounded-full hover:scale-110 transition">
+          <FaTiktok />
+        </a>
+      </div>
+
+      {/* BOTTOM BAR */}
+      <div className="border-t border-white/20 py-5 text-center text-base sm:text-lg px-4">
+
+        © 2025 <span className="font-semibold text-white">Learnix</span>.  
+        All rights reserved.
       </div>
     </footer>
   );
