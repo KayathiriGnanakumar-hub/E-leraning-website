@@ -57,7 +57,7 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* RIGHT */}
+          {/* RIGHT R */}
           <div className="bg-white rounded-xl shadow p-5 flex flex-col">
             <h2 className="text-xl md:text-2xl font-bold text-purple-700 mb-5">
               Contact Form
