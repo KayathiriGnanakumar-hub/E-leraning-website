@@ -22,7 +22,7 @@ export default function Courses() {
               className="bg-white rounded-xl shadow hover:shadow-lg
               transition p-4 flex flex-col"
             >
-              {/* IMAGE */}
+              {/* IMAGE comment */}
               <div className="h-36 mb-4 overflow-hidden rounded-xl">
                 <img
                   src={course.image}
