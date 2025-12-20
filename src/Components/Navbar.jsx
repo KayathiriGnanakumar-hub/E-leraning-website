@@ -8,6 +8,10 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isLoggedIn =
+    localStorage.getItem("isLoggedIn") === "true" && user;
+
   const goToSection = (id) => {
     setOpen(false);
     if (location.pathname !== "/") {
@@ -20,11 +24,17 @@ export default function Navbar() {
     }
   };
 
+  const logout = () => {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("user");
+    navigate("/");
+  };
+
   return (
     <nav className="fixed top-0 w-full bg-white shadow z-50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-        {/* Logo test */}
+        {/* LOGO */}
         <div className="flex items-center gap-3">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -39,12 +49,29 @@ export default function Navbar() {
         </div>
 
         {/* DESKTOP MENU */}
-        <div className="hidden md:flex gap-6 font-medium">
+        <div className="hidden md:flex gap-6 font-medium items-center">
           <span onClick={() => goToSection("home")} className="cursor-pointer">Home</span>
           <span onClick={() => goToSection("courses")} className="cursor-pointer">Courses</span>
-          <span onClick={() => goToSection("register")} className="cursor-pointer">Register</span>
-          <span onClick={() => goToSection("login")} className="cursor-pointer">Login</span>
           <span onClick={() => goToSection("contact")} className="cursor-pointer">Contact</span>
+
+          {!isLoggedIn ? (
+            <>
+              <span onClick={() => goToSection("register")} className="cursor-pointer">Register</span>
+              <span onClick={() => goToSection("login")} className="cursor-pointer">Login</span>
+            </>
+          ) : (
+            <>
+              <span className="text-sm font-semibold">
+                {user.name} ({user.role})
+              </span>
+              <button
+                onClick={logout}
+                className="text-red-600 text-sm font-medium"
+              >
+                Logout
+              </button>
+            </>
+          )}
 
           <Link to="/cart" className="relative">
             <FiShoppingCart className="text-xl" />
@@ -57,7 +84,7 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* MOBILE MENU BUTTON (TEXT) */}
+        {/* MOBILE MENU BUTTON */}
         <button
           className="md:hidden text-2xl font-bold"
           onClick={() => setOpen(!open)}
@@ -71,9 +98,22 @@ export default function Navbar() {
         <div className="md:hidden bg-white px-6 pb-4">
           <p onClick={() => goToSection("home")} className="py-2">Home</p>
           <p onClick={() => goToSection("courses")} className="py-2">Courses</p>
-          <p onClick={() => goToSection("register")} className="py-2">Register</p>
-          <p onClick={() => goToSection("login")} className="py-2">Login</p>
           <p onClick={() => goToSection("contact")} className="py-2">Contact</p>
+
+          {!isLoggedIn ? (
+            <>
+              <p onClick={() => goToSection("register")} className="py-2">Register</p>
+              <p onClick={() => goToSection("login")} className="py-2">Login</p>
+            </>
+          ) : (
+            <>
+              <p className="py-2 font-semibold">
+                {user.name} ({user.role})
+              </p>
+              <p onClick={logout} className="py-2 text-red-600">Logout</p>
+            </>
+          )}
+
           <Link to="/cart" className="py-2 block">
             Cart ({getCartCount()})
           </Link>

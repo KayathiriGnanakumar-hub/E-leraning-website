@@ -1,68 +1,74 @@
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link } from "react-router-dom";
 
 export default function Login() {
-  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const loginUser = () => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    if (!storedUser) {
+      alert("Please register first");
+      return;
+    }
+
+    if (
+      storedUser.email !== email ||
+      storedUser.password !== password
+    ) {
+      alert("Invalid credentials");
+      return;
+    }
+
+    // ✅ FINAL LOGIN STATE (IMPORTANT)
+    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("user", JSON.stringify(storedUser));
+
+    // 🔁 Resume pending course
+    const pendingCourse = localStorage.getItem("pending_course");
+    if (pendingCourse) {
+      localStorage.removeItem("pending_course");
+      navigate(`/course/${pendingCourse}`);
+      return;
+    }
+
+    // Role redirect
+    if (storedUser.role === "admin") {
+      navigate("/admin");
+    } else {
+      navigate("/students");
+    }
+  };
 
   return (
-    <section
-      id="login"
-      className="min-h-[80vh] flex items-center justify-center bg-[#F5F3FF] px-4"
-    >
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+    <section id="login" className="min-h-screen flex justify-center items-center bg-[#F5F3FF] px-4">
+      <div className="bg-white p-8 rounded-xl shadow max-w-md w-full">
 
-        <h2 className="text-2xl font-bold text-center text-purple-700 mb-1">
-          Welcome Back
+        <h2 className="text-3xl font-bold text-center text-indigo-700 mb-6">
+          Login
         </h2>
-        <p className="text-center text-sm text-slate-600 mb-6">
-          Access your learning space and continue building your skills
-        </p>
 
         <input
-          type="email"
-          placeholder="Email address"
-          className="w-full mb-4 px-4 py-2 rounded-md border
-          focus:outline-none focus:ring-2 focus:ring-purple-500"
+          placeholder="Email"
+          className="w-full border p-2 rounded mb-3"
+          onChange={(e) => setEmail(e.target.value)}
         />
 
-        <div className="relative mb-4">
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            className="w-full px-4 py-2 rounded-md border
-            focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-          <span
-            className="absolute right-4 top-1/2 -translate-y-1/2
-            text-slate-500 cursor-pointer"
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
-          </span>
-        </div>
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full border p-2 rounded mb-4"
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
         <button
-          className="w-full py-2 rounded-md font-medium text-white
-          bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 transition"
+          onClick={loginUser}
+          className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700"
         >
           Login
         </button>
-
-        {/* ✅ PROFESSIONAL STUDENT DASHBOARD CTA */}
-        <div className="mt-6 text-center">
-          <p className="text-sm text-slate-600 mb-2">
-            Want to explore the student learning experience?
-          </p>
-          <Link
-            to="/students"
-            className="inline-block w-full py-2 rounded-md
-            border-2 border-indigo-600 text-indigo-600 font-semibold
-            hover:bg-indigo-600 hover:text-white transition"
-          >
-            Explore Student Dashboard
-          </Link>
-        </div>
 
       </div>
     </section>

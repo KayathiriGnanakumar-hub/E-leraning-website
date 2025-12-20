@@ -19,10 +19,10 @@ import MyCourses from "./Components/student/MyCourses";
 import Progress from "./Components/student/Progress";
 import Certificates from "./Components/student/Certificates";
 import Internships from "./Components/student/Internships";
+
 import AdminLayout from "./Components/admin/AdminLayout";
 import AdminDashboard from "./Components/admin/AdminDashboard";
 import ManageCourses from "./Components/admin/ManageCourses";
-
 
 
 export default function App() {
@@ -51,18 +51,17 @@ export default function App() {
 
         {/* ========== STUDENT PANEL ROUTES ========== */}
         <Route path="/students" element={<StudentLayout />}>
-        <Route index element={<Dashboard />} />
-        <Route path="courses" element={<MyCourses />} />
-        <Route path="progress" element={<Progress />} />
-        <Route path="certificates" element={<Certificates />} />
-        <Route path="internships" element={<Internships />} />
-       </Route>
-{/* ========== ADMIN PANEL ROUTES ========== */}
+          <Route index element={<Dashboard />} />
+          <Route path="courses" element={<MyCourses />} />
+          <Route path="progress" element={<Progress />} />
+          <Route path="certificates" element={<Certificates />} />
+          <Route path="internships" element={<Internships />} />
+        </Route>
+        {/* ========== ADMIN PANEL ROUTES ========== */}
 <Route path="/admin" element={<AdminLayout />}>
   <Route index element={<AdminDashboard />} />
   <Route path="courses" element={<ManageCourses />} />
 </Route>
-
 
       </Routes>
     </BrowserRouter>
