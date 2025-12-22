@@ -24,7 +24,8 @@ export default function Cart() {
     alert("Payment successful! You are now enrolled.");
 
     // Redirect to student dashboard
-    navigate("/students");
+    navigate("/payment");
+
   };
 
   return (

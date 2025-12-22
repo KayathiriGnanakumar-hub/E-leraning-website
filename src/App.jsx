@@ -23,6 +23,10 @@ import Internships from "./Components/student/Internships";
 import AdminLayout from "./Components/admin/AdminLayout";
 import AdminDashboard from "./Components/admin/AdminDashboard";
 import ManageCourses from "./Components/admin/ManageCourses";
+import AdminProtectedRoute from "./Components/admin/AdminProtectedRoute";
+import Payment from "./Components/Payment";
+import PaymentSuccess from "./Components/PaymentSuccess";
+
 
 
 export default function App() {
@@ -58,10 +62,20 @@ export default function App() {
           <Route path="internships" element={<Internships />} />
         </Route>
         {/* ========== ADMIN PANEL ROUTES ========== */}
-<Route path="/admin" element={<AdminLayout />}>
+<Route
+  path="/admin"
+  element={
+    <AdminProtectedRoute>
+      <AdminLayout />
+    </AdminProtectedRoute>
+  }
+>
   <Route index element={<AdminDashboard />} />
   <Route path="courses" element={<ManageCourses />} />
 </Route>
+<Route path="payment" element={<Payment />} />
+<Route path="payment-success" element={<PaymentSuccess />} />
+
 
       </Routes>
     </BrowserRouter>
