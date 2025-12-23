@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import courseData from "../data/courseData";
 
 export default function Courses() {
-  // 🔐 Always read fresh from localStorage
+  // Always read fresh from localStorage
   const adminCourses = JSON.parse(localStorage.getItem("admin_courses"));
 
-  // ✅ Fallback if admin has not added courses
+  // Fallback if admin has not added courses
   const courses =
     Array.isArray(adminCourses) && adminCourses.length > 0
       ? adminCourses
@@ -14,7 +14,6 @@ export default function Courses() {
   return (
     <section id="courses" className="pt-28 pb-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-6">
-
         <h1 className="text-2xl font-bold mb-8 text-slate-900 text-center">
           Our Courses
         </h1>
@@ -53,14 +52,15 @@ export default function Courses() {
 
               <Link
                 to={`/course/${course.id}`}
-                className="mt-auto text-center border border-indigo-600 text-indigo-600 py-2 rounded-md text-sm font-semibold hover:bg-indigo-600 hover:text-white transition"
+                className="mt-auto px-6 py-3 rounded-lg text-white font-semibold
+                bg-gradient-to-r from-indigo-600 to-purple-600
+                hover:from-indigo-700 hover:to-purple-700 transition"
               >
                 Enroll
               </Link>
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );

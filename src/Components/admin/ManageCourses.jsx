@@ -4,7 +4,6 @@ import courseData from "../../data/courseData";
 export default function ManageCourses() {
   const [courses, setCourses] = useState([]);
   const [editingId, setEditingId] = useState("");
-
   const [form, setForm] = useState({
     title: "",
     price: "",
@@ -12,10 +11,9 @@ export default function ManageCourses() {
     image: "",
   });
 
-  // Load courses ONCE
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("admin_courses"));
-    if (Array.isArray(stored) && stored.length > 0) {
+    if (stored && stored.length > 0) {
       setCourses(stored);
     } else {
       setCourses(courseData);
@@ -23,162 +21,68 @@ export default function ManageCourses() {
     }
   }, []);
 
-  // Handle input change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
-  // ADD / UPDATE course
   const saveCourse = (e) => {
     e.preventDefault();
+    if (!form.title || !form.price || !form.duration) return;
 
-    if (!form.title || !form.price || !form.duration) {
-      alert("Please fill all required fields");
-      return;
-    }
-
-    let updatedCourses;
-
-    if (editingId !== "") {
-      // ✅ UPDATE MODE (FIXED)
-      updatedCourses = courses.map((course) =>
-        String(course.id) === editingId
-          ? { ...course, ...form }
-          : course
+    let updated;
+    if (editingId) {
+      updated = courses.map((c) =>
+        String(c.id) === editingId ? { ...c, ...form } : c
       );
     } else {
-      // ADD MODE
-      const newCourse = {
-        id: Date.now().toString(),
-        ...form,
-      };
-      updatedCourses = [...courses, newCourse];
+      updated = [...courses, { id: Date.now().toString(), ...form }];
     }
 
-    setCourses(updatedCourses);
-    localStorage.setItem("admin_courses", JSON.stringify(updatedCourses));
-
-    // Reset
+    setCourses(updated);
+    localStorage.setItem("admin_courses", JSON.stringify(updated));
     setForm({ title: "", price: "", duration: "", image: "" });
     setEditingId("");
   };
 
-  // ENTER EDIT MODE (FIXED)
-  const editCourse = (course) => {
-    setEditingId(String(course.id)); // 🔑 normalize ID
-    setForm({
-      title: course.title,
-      price: course.price,
-      duration: course.duration,
-      image: course.image || "",
-    });
-  };
-
-  // DELETE
   const deleteCourse = (id) => {
-    const updated = courses.filter(
-      (course) => String(course.id) !== String(id)
-    );
+    if (!window.confirm("Delete this course?")) return;
+    const updated = courses.filter((c) => String(c.id) !== String(id));
     setCourses(updated);
     localStorage.setItem("admin_courses", JSON.stringify(updated));
-
-    if (String(id) === editingId) {
-      setEditingId("");
-      setForm({ title: "", price: "", duration: "", image: "" });
-    }
   };
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Manage Courses</h1>
+      <h1 className="text-3xl font-bold mb-6">Manage Courses</h1>
 
-      {/* FORM */}
-      <form
-        onSubmit={saveCourse}
-        className="bg-white p-6 rounded-xl shadow mb-8 grid gap-4 sm:grid-cols-2"
-      >
-        <input
-          name="title"
-          placeholder="Course Title"
-          className="border p-2 rounded"
-          value={form.title}
-          onChange={handleChange}
-        />
+      <form onSubmit={saveCourse} className="bg-white p-6 rounded-2xl shadow mb-8">
+        <h2 className="font-semibold mb-4 text-indigo-700">
+          {editingId ? "Edit Course" : "Add Course"}
+        </h2>
 
-        <input
-          name="price"
-          placeholder="Price (₹499)"
-          className="border p-2 rounded"
-          value={form.price}
-          onChange={handleChange}
-        />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <input name="title" placeholder="Title" className="border p-2 rounded" onChange={handleChange} value={form.title} />
+          <input name="price" placeholder="Price" className="border p-2 rounded" onChange={handleChange} value={form.price} />
+          <input name="duration" placeholder="Duration" className="border p-2 rounded" onChange={handleChange} value={form.duration} />
+          <input name="image" placeholder="Image URL" className="border p-2 rounded" onChange={handleChange} value={form.image} />
+        </div>
 
-        <input
-          name="duration"
-          placeholder="Duration (6 Weeks)"
-          className="border p-2 rounded"
-          value={form.duration}
-          onChange={handleChange}
-        />
+        {form.image && <img src={form.image} alt="preview" className="mt-4 h-32 rounded" />}
 
-        <input
-          name="image"
-          placeholder="Image URL (optional)"
-          className="border p-2 rounded"
-          value={form.image}
-          onChange={handleChange}
-        />
-
-        <button
-          type="submit"
-          className={`sm:col-span-2 py-2 rounded text-white ${
-            editingId
-              ? "bg-green-600 hover:bg-green-700"
-              : "bg-indigo-600 hover:bg-indigo-700"
-          }`}
-        >
-          {editingId ? "Update Course" : "Add Course"}
+        <button className="mt-4 w-full bg-indigo-600 text-white py-2 rounded">
+          {editingId ? "Update" : "Add"}
         </button>
       </form>
 
-      {/* COURSE LIST */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <h2 className="font-semibold mb-4">Existing Courses</h2>
-
-        <div className="space-y-3">
-          {courses.map((course) => (
-            <div
-              key={course.id}
-              className="flex justify-between items-center border-b pb-2"
-            >
-              <div>
-                <p className="font-medium">{course.title}</p>
-                <p className="text-sm text-gray-500">
-                  {course.duration} • {course.price}
-                </p>
-              </div>
-
-              <div className="flex gap-4">
-                <button
-                  type="button"
-                  onClick={() => editCourse(course)}
-                  className="text-indigo-600 text-sm hover:underline"
-                >
-                  Edit
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => deleteCourse(course.id)}
-                  className="text-red-600 text-sm hover:underline"
-                >
-                  Delete
-                </button>
-              </div>
+      <div className="bg-white p-6 rounded-2xl shadow">
+        {courses.map((c) => (
+          <div key={c.id} className="flex justify-between border-b py-3">
+            <div>
+              <p className="font-medium">{c.title}</p>
+              <p className="text-sm text-gray-500">{c.duration} • {c.price}</p>
             </div>
-          ))}
-        </div>
+            <button onClick={() => deleteCourse(c.id)} className="text-red-600">Delete</button>
+          </div>
+        ))}
       </div>
     </div>
   );

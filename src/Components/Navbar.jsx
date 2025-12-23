@@ -8,12 +8,10 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const isLoggedIn =
-    localStorage.getItem("isLoggedIn") === "true" && user;
-
+  // Scroll only for HOME sections
   const goToSection = (id) => {
     setOpen(false);
+
     if (location.pathname !== "/") {
       navigate("/");
       setTimeout(() => {
@@ -24,54 +22,40 @@ export default function Navbar() {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("user");
-    navigate("/");
-  };
-
   return (
     <nav className="fixed top-0 w-full bg-white shadow z-50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
         {/* LOGO */}
-        <div className="flex items-center gap-3">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="w-10 h-10 text-indigo-600"
-          >
-            <path d="M12 2L1 7l11 5 9-4.09V17h2V7L12 2z" />
-            <path d="M11 12.98L3 9v6l8 4 8-4V9l-8 3.98z" />
-          </svg>
-          <h1 className="text-2xl font-bold text-indigo-600">Learnix</h1>
+        <div
+          className="text-2xl font-bold text-indigo-600 cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          Learnix
         </div>
 
         {/* DESKTOP MENU */}
         <div className="hidden md:flex gap-6 font-medium items-center">
-          <span onClick={() => goToSection("home")} className="cursor-pointer">Home</span>
-          <span onClick={() => goToSection("courses")} className="cursor-pointer">Courses</span>
-          <span onClick={() => goToSection("contact")} className="cursor-pointer">Contact</span>
+          <span onClick={() => goToSection("home")} className="cursor-pointer">
+            Home
+          </span>
 
-          {!isLoggedIn ? (
-            <>
-              <span onClick={() => goToSection("register")} className="cursor-pointer">Register</span>
-              <span onClick={() => goToSection("login")} className="cursor-pointer">Login</span>
-            </>
-          ) : (
-            <>
-              <span className="text-sm font-semibold">
-                {user.name} ({user.role})
-              </span>
-              <button
-                onClick={logout}
-                className="text-red-600 text-sm font-medium"
-              >
-                Logout
-              </button>
-            </>
-          )}
+          <span onClick={() => goToSection("courses")} className="cursor-pointer">
+            Courses
+          </span>
+
+          <span onClick={() => goToSection("contact")} className="cursor-pointer">
+            Contact
+          </span>
+
+          {/* ROUTE-BASED NAVIGATION */}
+          <span onClick={() => navigate("/register")} className="cursor-pointer">
+            Register
+          </span>
+
+          <span onClick={() => navigate("/login")} className="cursor-pointer">
+            Login
+          </span>
 
           <Link to="/cart" className="relative">
             <FiShoppingCart className="text-xl" />
@@ -86,7 +70,7 @@ export default function Navbar() {
 
         {/* MOBILE MENU BUTTON */}
         <button
-          className="md:hidden text-2xl font-bold"
+          className="md:hidden text-2xl"
           onClick={() => setOpen(!open)}
         >
           {open ? "✕" : "☰"}
@@ -100,19 +84,13 @@ export default function Navbar() {
           <p onClick={() => goToSection("courses")} className="py-2">Courses</p>
           <p onClick={() => goToSection("contact")} className="py-2">Contact</p>
 
-          {!isLoggedIn ? (
-            <>
-              <p onClick={() => goToSection("register")} className="py-2">Register</p>
-              <p onClick={() => goToSection("login")} className="py-2">Login</p>
-            </>
-          ) : (
-            <>
-              <p className="py-2 font-semibold">
-                {user.name} ({user.role})
-              </p>
-              <p onClick={logout} className="py-2 text-red-600">Logout</p>
-            </>
-          )}
+          <p onClick={() => navigate("/register")} className="py-2">
+            Register
+          </p>
+
+          <p onClick={() => navigate("/login")} className="py-2">
+            Login
+          </p>
 
           <Link to="/cart" className="py-2 block">
             Cart ({getCartCount()})

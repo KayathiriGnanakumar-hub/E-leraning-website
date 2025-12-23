@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { getCartItems } from "../utils/cartStorage";
+import { db } from "../firebase";
+
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -24,7 +26,8 @@ export default function Cart() {
     alert("Payment successful! You are now enrolled.");
 
     // Redirect to student dashboard
-    navigate("/students");
+    navigate("/payment");
+
   };
 
   return (

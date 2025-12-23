@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FaBook, FaUserGraduate, FaClipboardList } from "react-icons/fa";
 import courseData from "../../data/courseData";
 
 export default function AdminDashboard() {
@@ -7,10 +8,8 @@ export default function AdminDashboard() {
   const [totalEnrollments, setTotalEnrollments] = useState(0);
 
   useEffect(() => {
-    // Total courses from courseData
     setTotalCourses(courseData.length);
 
-    // Simulated total students (stored once)
     let students = localStorage.getItem("total_students");
     if (!students) {
       localStorage.setItem("total_students", "120");
@@ -18,54 +17,36 @@ export default function AdminDashboard() {
     }
     setTotalStudents(Number(students));
 
-    // Total enrollments from enrolled courses
     const enrolled =
       JSON.parse(localStorage.getItem("enrolled_courses")) || [];
     setTotalEnrollments(enrolled.length);
   }, []);
 
+  const Card = ({ title, value, icon, color }) => (
+    <div className="bg-white rounded-2xl shadow p-6 flex items-center gap-5">
+      <div className={`p-4 rounded-xl ${color} text-white text-2xl`}>
+        {icon}
+      </div>
+      <div>
+        <p className="text-sm text-gray-500">{title}</p>
+        <p className="text-3xl font-bold text-gray-800">{value}</p>
+      </div>
+    </div>
+  );
+
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">
+      <h1 className="text-3xl font-bold text-gray-800 mb-2">
         Admin Dashboard
       </h1>
-
-      <p className="text-gray-600 mb-6">
-        Platform overview and administrative statistics.
+      <p className="text-gray-600 mb-8">
+        Platform statistics overview
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-        {/* TOTAL COURSES */}
-        <div className="bg-white rounded-xl shadow p-5">
-          <h3 className="font-semibold text-gray-700 mb-1">
-            Total Courses
-          </h3>
-          <p className="text-3xl font-bold text-indigo-600">
-            {totalCourses}
-          </p>
-        </div>
-
-        {/* TOTAL STUDENTS */}
-        <div className="bg-white rounded-xl shadow p-5">
-          <h3 className="font-semibold text-gray-700 mb-1">
-            Total Students
-          </h3>
-          <p className="text-3xl font-bold text-green-600">
-            {totalStudents}
-          </p>
-        </div>
-
-        {/* TOTAL ENROLLMENTS */}
-        <div className="bg-white rounded-xl shadow p-5">
-          <h3 className="font-semibold text-gray-700 mb-1">
-            Total Enrollments
-          </h3>
-          <p className="text-3xl font-bold text-purple-600">
-            {totalEnrollments}
-          </p>
-        </div>
-
+        <Card title="Total Courses" value={totalCourses} icon={<FaBook />} color="bg-indigo-600" />
+        <Card title="Total Students" value={totalStudents} icon={<FaUserGraduate />} color="bg-green-600" />
+        <Card title="Total Enrollments" value={totalEnrollments} icon={<FaClipboardList />} color="bg-purple-600" />
       </div>
     </div>
   );
