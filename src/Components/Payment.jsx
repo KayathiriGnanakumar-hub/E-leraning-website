@@ -1,7 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { getCartItems, clearCart } from "../utils/cartStorage";
-import { auth, db } from "../firebase";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { getCartItems } from "../utils/cartStorage";
 import { useState } from "react";
 
 export default function Payment() {
@@ -10,46 +8,46 @@ export default function Payment() {
   const [loading, setLoading] = useState(false);
 
   const total = cartItems.reduce(
-    (sum, item) => sum + Number(item.price.replace("₹", "")),
+    (sum, item) => sum + Number(item.price),
     0
   );
 
-  const payNow = async () => {
-    const user = auth.currentUser;
-    if (!user) {
-      alert("Please login");
-      navigate("/login");
-      return;
-    }
-
+  const payNow = () => {
     setLoading(true);
-
-    // 🔥 ENROLL AFTER PAYMENT
-    for (const course of cartItems) {
-      await setDoc(
-        doc(db, "users", user.uid, "enrolledCourses", course.id),
-        {
-          ...course,
-          progress: 0,
-          enrolledAt: serverTimestamp(),
-        }
-      );
-    }
-
-    clearCart();
-    setLoading(false);
-    navigate("/payment-success");
+    setTimeout(() => {
+      navigate("/payment-success");
+    }, 1500);
   };
 
   return (
     <section className="pt-28 pb-20 min-h-screen bg-gray-50">
-      <div className="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow">
-        <h1 className="text-3xl font-bold mb-6 text-indigo-700">Payment</h1>
+      <div className="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow">
 
-        {cartItems.map((c) => (
-          <div key={c.id} className="flex justify-between border-b py-2">
-            <span>{c.title}</span>
-            <span>{c.price}</span>
+        <h1 className="text-3xl font-bold text-indigo-700 mb-6">
+          Payment
+        </h1>
+
+        {cartItems.map((item) => (
+          <div
+            key={item.id}
+            className="flex items-center gap-4 border-b py-4"
+          >
+            <img
+              src={item.image}
+              alt={item.title}
+              className="w-24 h-16 object-cover rounded"
+            />
+
+            <div className="flex-1">
+              <p className="font-semibold">{item.title}</p>
+              <p className="text-sm text-gray-500">
+                {item.duration}
+              </p>
+            </div>
+
+            <span className="font-semibold text-indigo-600">
+              ₹{item.price}
+            </span>
           </div>
         ))}
 

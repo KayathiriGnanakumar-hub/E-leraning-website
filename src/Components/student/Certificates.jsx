@@ -1,48 +1,56 @@
 import { useEffect, useState } from "react";
-
+import { auth, db } from "../../firebase";
+import { collection, getDocs } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function Certificates() {
-  const [certificates, setCertificates] = useState([]);
+  const [certs, setCerts] = useState([]);
 
   useEffect(() => {
-    const enrolled =
-      JSON.parse(localStorage.getItem("enrolled_courses")) || [];
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (!user) return;
 
-    const completed = enrolled.filter(
-      (course) => course.progress === 100
-    );
+      const ref = collection(
+        db,
+        "users",
+        user.uid,
+        "enrolledCourses"
+      );
 
-    setCertificates(completed);
+      const snap = await getDocs(ref);
+      const completed = snap.docs
+        .map((d) => d.data())
+        .filter((c) => c.completed === true);
+
+      setCerts(completed);
+    });
+
+    return () => unsub();
   }, []);
 
-  if (certificates.length === 0) {
-    return (
-      <p className="text-gray-600">
-        Complete courses to unlock certificates.
-      </p>
-    );
+  if (certs.length === 0) {
+    return <p>No certificates earned yet.</p>;
   }
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Your Certificates</h1>
+      <h1 className="text-2xl font-bold mb-6">
+        Certificates
+      </h1>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {certificates.map((course) => (
-          <div
-            key={course.id}
-            className="bg-white rounded-xl shadow p-5"
-          >
-            <h3 className="font-semibold mb-2">{course.title}</h3>
-            <p className="text-sm text-gray-500 mb-4">
-              Certificate of Completion
-            </p>
-            <button className="w-full py-2 bg-indigo-600 text-white rounded-md">
-              View Certificate
-            </button>
-          </div>
-        ))}
-      </div>
+      {certs.map((c, i) => (
+        <div
+          key={i}
+          className="bg-white p-5 rounded-xl shadow mb-4"
+        >
+          <h3 className="font-semibold">
+            {c.title}
+          </h3>
+          <p className="text-sm text-gray-600">
+            Certificate of Completion
+          </p>
+        </div>
+      ))}
     </div>
   );
 }

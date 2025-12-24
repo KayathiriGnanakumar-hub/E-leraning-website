@@ -1,23 +1,21 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-/* ========== AUTH GUARD ========== */
-import ProtectedRoute from "./Components/auth/ProtectedRoute";
-
 /* ========== LAYOUTS ========== */
 import PublicLayout from "./Components/public/PublicLayout";
 import StudentLayout from "./Components/student/StudentLayout";
 import AdminLayout from "./Components/admin/AdminLayout";
 
-/* ========== PUBLIC SECTIONS ========== */
+/* ========== PUBLIC PAGES ========== */
 import Hero from "./Components/Hero";
 import Courses from "./Components/Courses";
 import Contact from "./Components/Contact";
-
-/* ========== PUBLIC PAGES ========== */
 import Login from "./Components/Login";
 import Register from "./Components/Register";
 import CourseDetails from "./Components/CourseDetails";
 import Cart from "./Components/Cart";
+import Profile from "./Components/Profile";
+import Payment from "./Components/Payment";
+import PaymentSuccess from "./Components/PaymentSuccess";
 
 /* ========== STUDENT PAGES ========== */
 import Dashboard from "./Components/student/Dashboard";
@@ -37,31 +35,22 @@ export default function App() {
 
         {/* ========= PUBLIC ROUTES ========= */}
         <Route path="/" element={<PublicLayout />}>
-          <Route
-            index
-            element={
-              <>
-                <Hero />
-                <Courses />
-                <Contact />
-              </>
-            }
-          />
+          <Route index element={<Hero />} />
+          <Route path="courses" element={<Courses />} />
           <Route path="course/:id" element={<CourseDetails />} />
+          <Route path="contact" element={<Contact />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="cart" element={<Cart />} />
+          <Route path="profile" element={<Profile />} />
+
+          {/* ✅ PAYMENT ROUTES */}
+          <Route path="payment" element={<Payment />} />
+          <Route path="payment-success" element={<PaymentSuccess />} />
         </Route>
 
         {/* ========= STUDENT ROUTES ========= */}
-        <Route
-          path="/students"
-          element={
-            <ProtectedRoute allowedRole="student">
-              <StudentLayout />
-            </ProtectedRoute>
-          }
-        >
+        <Route path="/students" element={<StudentLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="courses" element={<MyCourses />} />
           <Route path="progress" element={<Progress />} />
@@ -70,14 +59,7 @@ export default function App() {
         </Route>
 
         {/* ========= ADMIN ROUTES ========= */}
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute allowedRole="admin">
-              <AdminLayout />
-            </ProtectedRoute>
-          }
-        >
+        <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="courses" element={<ManageCourses />} />
         </Route>
