@@ -9,9 +9,13 @@ export default function AdminLayout() {
 
       {/* SIDEBAR */}
       <aside className="w-64 bg-gradient-to-b from-purple-700 to-indigo-600 text-white p-6 shadow-xl">
-        <h2 className="text-2xl font-bold mb-10 tracking-wide">
+        <h2 className="text-2xl font-bold tracking-wide">
           Admin Panel
         </h2>
+
+        {/* WHITE SEPARATOR */}
+       <div className="-mx-6 h-[2px] bg-white my-10"></div>
+
 
         <nav className="space-y-4">
           <NavLink

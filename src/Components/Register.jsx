@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -8,22 +9,28 @@ export default function Register() {
     name: "",
     email: "",
     password: "",
-    role: "student",
+    confirmPassword: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const registerUser = () => {
-    if (!form.name || !form.email || !form.password) {
+    if (!form.name || !form.email || !form.password || !form.confirmPassword) {
       alert("Please fill all fields");
       return;
     }
 
-    // ✅ TEMP FRONTEND AUTH
-    localStorage.setItem("learnix_user", JSON.stringify(form));
+    if (form.password !== form.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
 
+    localStorage.setItem("learnix_user", JSON.stringify(form));
     alert("Registration successful. Please login.");
     navigate("/login");
   };
@@ -39,16 +46,6 @@ export default function Register() {
           Create Account
         </h2>
 
-        <select
-          name="role"
-          value={form.role}
-          onChange={handleChange}
-          className="w-full border border-violet-300 rounded-lg px-3 py-2 mb-3"
-        >
-          <option value="student">Student</option>
-          <option value="admin">Admin</option>
-        </select>
-
         <input
           name="name"
           placeholder="Full Name"
@@ -63,13 +60,41 @@ export default function Register() {
           onChange={handleChange}
         />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          className="w-full border border-violet-300 rounded-lg px-3 py-2 mb-4"
-          onChange={handleChange}
-        />
+        {/* PASSWORD */}
+        <div className="relative mb-3">
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="Password"
+            className="w-full border border-violet-300 rounded-lg px-3 py-2 pr-10"
+            onChange={handleChange}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-violet-600"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
+
+        {/* CONFIRM PASSWORD */}
+        <div className="relative mb-4">
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            className="w-full border border-violet-300 rounded-lg px-3 py-2 pr-10"
+            onChange={handleChange}
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-violet-600"
+          >
+            {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
 
         <button
           onClick={registerUser}
