@@ -1,102 +1,52 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FiShoppingCart } from "react-icons/fi";
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase";
-import { useAuth } from "../context/AuthContext";
-import { getCartCount } from "../utils/cartStorage";
+import { PiStudentBold } from "react-icons/pi";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, profile, loading } = useAuth();
 
-  // 🔐 Logout using Firebase
-  const logout = async () => {
-    await signOut(auth);
-    navigate("/login");
-  };
-
-  // ⭐ Home scroll (only on /)
   const goToHome = () => {
-    if (location.pathname !== "/") {
-      navigate("/");
-    } else {
-      document
-        .getElementById("home")
-        ?.scrollIntoView({ behavior: "smooth" });
-    }
+    if (location.pathname !== "/") navigate("/");
+    else document.getElementById("home")?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const navBtn =
+    "px-4 py-2 rounded-lg border-2 border-violet-600 \
+     bg-violet-50 text-violet-700 font-semibold \
+     hover:bg-violet-600 hover:text-white transition";
 
   return (
-    <nav className="fixed top-0 w-full bg-white shadow z-50">
+    <nav className="fixed top-0 w-full z-50 bg-white border-b border-violet-200">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
         {/* LOGO */}
-        <div
-          className="flex items-center gap-2 cursor-pointer"
-          onClick={goToHome}
-        >
-          <img src="/logo.png" alt="Learnix" className="h-8" />
-          <span className="text-xl font-bold text-indigo-600">
+        <div onClick={goToHome} className="flex items-center gap-3 cursor-pointer">
+          <img src="/logo.png" alt="Learnix" className="h-10" />
+          <span className="text-2xl font-bold text-violet-700">
             Learnix
           </span>
         </div>
 
-        {/* MENU */}
-        <div className="flex items-center gap-6 font-medium">
+        {/* NAV */}
+        <div className="flex items-center gap-4">
+          <button onClick={goToHome} className={navBtn}>Home</button>
+          <Link to="/courses" className={navBtn}>Courses</Link>
+          <Link to="/contact" className={navBtn}>Contact</Link>
+          <Link to="/register" className={navBtn}>Register</Link>
 
-          <button onClick={goToHome}>Home</button>
-          <Link to="/courses">Courses</Link>
-          <Link to="/contact">Contact</Link>
-
-          {/* AUTH */}
-          {!loading && !user && (
-            <>
-              <Link to="/register">Register</Link>
-              <Link to="/login">Login</Link>
-            </>
-          )}
-
-          {!loading && user && profile && (
-            <div className="flex items-center gap-4">
-              <Link
-                to="/profile"
-                className="text-right leading-tight hover:opacity-80"
-              >
-                <p className="text-sm font-semibold text-gray-700">
-                  {profile.name}
-                </p>
-                <p className="text-xs text-gray-500">
-                  {profile.email}
-                </p>
-                <p className="text-[10px] text-indigo-600 uppercase">
-                  {profile.role}
-                </p>
-              </Link>
-
-              <button
-                onClick={logout}
-                className="text-sm text-red-600 hover:underline"
-              >
-                Logout
-              </button>
-            </div>
-          )}
-
-          {/* CART */}
-          <Link to="/cart" className="relative">
-            <FiShoppingCart size={20} />
-            {getCartCount() > 0 && (
-              <span
-                className="absolute -top-2 -right-2 bg-red-500 text-white
-                text-xs w-5 h-5 flex items-center justify-center rounded-full"
-              >
-                {getCartCount()}
-              </span>
-            )}
-          </Link>
-
+          {/* E-LEARNING ICON */}
+          <div
+            className="px-4 py-2 rounded-lg border-2 border-violet-600
+            bg-violet-50 hover:bg-violet-600 transition cursor-pointer"
+            title="Learning Portal"
+          >
+            <PiStudentBold
+              size={24}
+              className="text-violet-700 hover:text-white"
+            />
+          </div>
         </div>
+
       </div>
     </nav>
   );

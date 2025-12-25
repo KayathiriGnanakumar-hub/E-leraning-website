@@ -1,82 +1,69 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-import { auth, db } from "../firebase";
+import { useState } from "react";
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const loginUser = async () => {
-    try {
-      // 1️⃣ Login with Firebase Auth
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+  const loginUser = () => {
+    const storedUser = JSON.parse(
+      localStorage.getItem("learnix_user")
+    );
 
-      const user = userCredential.user;
+    if (!storedUser) {
+      alert("No user found. Please register.");
+      return;
+    }
 
-      // 2️⃣ Reference Firestore user document
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
+    if (
+      storedUser.email === email &&
+      storedUser.password === password
+    ) {
+      localStorage.setItem("learnix_logged_in", "true");
 
-      // 3️⃣ If profile does NOT exist → create it
-      if (!userSnap.exists()) {
-        await setDoc(userRef, {
-          email: user.email,
-          role: "student", // default role
-          createdAt: serverTimestamp(),
-        });
-      }
-
-      // 4️⃣ Read role (new or existing)
-      const finalSnap = await getDoc(userRef);
-      const userData = finalSnap.data();
-
-      // 5️⃣ Role-based redirect
-      if (userData.role === "admin") {
+      if (storedUser.role === "admin") {
         navigate("/admin");
       } else {
         navigate("/students");
       }
-
-    } catch (error) {
-      alert(error.message);
+    } else {
+      alert("Invalid credentials");
     }
   };
 
   return (
-    <section className="min-h-screen flex justify-center items-center bg-[#F5F3FF] px-4">
-      <div className="bg-white p-8 rounded-xl shadow max-w-md w-full">
+    <section className="min-h-screen flex items-center justify-center
+      bg-gradient-to-br from-purple-700 via-indigo-700 to-purple-900 px-4">
 
-        <h2 className="text-3xl font-bold text-center text-indigo-700 mb-6">
+      <div className="bg-white w-full max-w-md rounded-2xl
+        shadow-xl p-8 border-2 border-violet-600">
+
+        <h2 className="text-3xl font-bold text-center text-violet-700 mb-6">
           Login
         </h2>
 
         <input
           placeholder="Email"
-          className="w-full border p-2 rounded mb-3"
+          className="w-full border border-violet-300 rounded-lg px-3 py-2 mb-3"
           onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
           type="password"
           placeholder="Password"
-          className="w-full border p-2 rounded mb-4"
+          className="w-full border border-violet-300 rounded-lg px-3 py-2 mb-4"
           onChange={(e) => setPassword(e.target.value)}
         />
 
         <button
           onClick={loginUser}
-          className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700"
+          className="w-full py-3 rounded-lg border-2 border-violet-600
+          bg-violet-50 text-violet-700 font-semibold
+          hover:bg-violet-600 hover:text-white transition"
         >
           Login
         </button>
-
       </div>
     </section>
   );

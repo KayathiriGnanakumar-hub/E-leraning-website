@@ -1,54 +1,40 @@
 import { useEffect, useState } from "react";
 import { FaBook, FaUserGraduate, FaClipboardList } from "react-icons/fa";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebase";
 
 export default function AdminDashboard() {
   const [totalCourses, setTotalCourses] = useState(0);
-  const [totalStudents, setTotalStudents] = useState(0);
+  const [totalStudents, setTotalStudents] = useState(120);
   const [totalEnrollments, setTotalEnrollments] = useState(0);
 
   useEffect(() => {
-    const fetchStats = async () => {
-      // ✅ Fetch courses from Firestore
-      const courseSnapshot = await getDocs(collection(db, "courses"));
-      setTotalCourses(courseSnapshot.size);
-
-      // ✅ Dummy students count (temporary)
-      let students = localStorage.getItem("total_students");
-      if (!students) {
-        localStorage.setItem("total_students", "120");
-        students = "120";
-      }
-      setTotalStudents(Number(students));
-
-      // ✅ Enrollments (local for now)
-      const enrolled =
-        JSON.parse(localStorage.getItem("enrolled_courses")) || [];
-      setTotalEnrollments(enrolled.length);
-    };
-
-    fetchStats();
+    const enrolled =
+      JSON.parse(localStorage.getItem("enrolled_courses")) || [];
+    setTotalEnrollments(enrolled.length);
   }, []);
 
-  const Card = ({ title, value, icon, color }) => (
-    <div className="bg-white rounded-2xl shadow p-6 flex items-center gap-5">
-      <div className={`p-4 rounded-xl ${color} text-white text-2xl`}>
+  const Card = ({ title, value, icon, border, textColor }) => (
+    <div
+      className={`bg-white rounded-2xl border-2 ${border}
+      shadow-sm hover:shadow-lg transition p-6 flex items-center gap-5`}
+    >
+      <div className="p-4 rounded-xl bg-purple-600 text-white text-2xl">
         {icon}
       </div>
+
       <div>
-        <p className="text-sm text-gray-500">{title}</p>
-        <p className="text-3xl font-bold text-gray-800">{value}</p>
+        <p className="text-sm text-slate-500">{title}</p>
+        <p className={`text-3xl font-bold ${textColor}`}>{value}</p>
       </div>
     </div>
   );
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-800 mb-2">
+      <h1 className="text-3xl font-bold text-slate-800 mb-1">
         Admin Dashboard
       </h1>
-      <p className="text-gray-600 mb-8">
+
+      <p className="text-slate-500 mb-8">
         Platform statistics overview
       </p>
 
@@ -57,19 +43,24 @@ export default function AdminDashboard() {
           title="Total Courses"
           value={totalCourses}
           icon={<FaBook />}
-          color="bg-indigo-600"
+          border="border-purple-300"
+          textColor="text-purple-600"
         />
+
         <Card
           title="Total Students"
           value={totalStudents}
           icon={<FaUserGraduate />}
-          color="bg-green-600"
+          border="border-green-300"
+          textColor="text-green-600"
         />
+
         <Card
           title="Total Enrollments"
           value={totalEnrollments}
           icon={<FaClipboardList />}
-          color="bg-purple-600"
+          border="border-yellow-300"
+          textColor="text-yellow-600"
         />
       </div>
     </div>

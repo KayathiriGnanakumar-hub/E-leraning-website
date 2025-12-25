@@ -1,69 +1,161 @@
-import { useState, useEffect } from "react";
-import { db } from "../../firebase";
-import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
+
+const STORAGE_KEY = "courses";
 
 const ManageCourses = () => {
   const [courses, setCourses] = useState([]);
   const [newCourse, setNewCourse] = useState({
+    id: "",
     title: "",
     description: "",
     price: "",
     image: "",
-    instructor: ""
+    instructor: "",
+    duration: "",
   });
 
-  // Fetch all courses from Firestore
-  const fetchCourses = async () => {
-    const data = await getDocs(collection(db, "courses"));
-    setCourses(data.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-  };
-
   useEffect(() => {
-    fetchCourses();
+    const storedCourses =
+      JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    setCourses(storedCourses);
   }, []);
 
-  // Add new course
-  const handleAddCourse = async () => {
-    await addDoc(collection(db, "courses"), newCourse);
-    alert("Course added!");
-    setNewCourse({ title: "", description: "", price: "", image: "", instructor: "" });
-    fetchCourses();
+  const handleAddCourse = () => {
+    if (!newCourse.title || !newCourse.price) {
+      alert("Title and price are required");
+      return;
+    }
+
+    const course = {
+      ...newCourse,
+      id: Date.now().toString(),
+    };
+
+    const updatedCourses = [...courses, course];
+    setCourses(updatedCourses);
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(updatedCourses)
+    );
+
+    setNewCourse({
+      id: "",
+      title: "",
+      description: "",
+      price: "",
+      image: "",
+      instructor: "",
+      duration: "",
+    });
+
+    alert("Course added (temporary)");
   };
 
-  // Delete course
-  const handleDeleteCourse = async (id) => {
-    await deleteDoc(doc(db, "courses", id));
-    fetchCourses();
+  const handleDeleteCourse = (id) => {
+    const updatedCourses = courses.filter(
+      (course) => course.id !== id
+    );
+    setCourses(updatedCourses);
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(updatedCourses)
+    );
   };
 
   return (
     <div>
-      <h1>Manage Courses</h1>
+      <h1 className="text-2xl font-bold mb-6">
+        Manage Courses (Frontend Only)
+      </h1>
 
-      <div>
-        <h3>Add New Course</h3>
-        <input placeholder="Title" value={newCourse.title} onChange={(e) => setNewCourse({ ...newCourse, title: e.target.value })} />
-        <input placeholder="Description" value={newCourse.description} onChange={(e) => setNewCourse({ ...newCourse, description: e.target.value })} />
-        <input placeholder="Price" value={newCourse.price} onChange={(e) => setNewCourse({ ...newCourse, price: e.target.value })} />
-        <input placeholder="Image URL" value={newCourse.image} onChange={(e) => setNewCourse({ ...newCourse, image: e.target.value })} />
-        <input placeholder="Instructor" value={newCourse.instructor} onChange={(e) => setNewCourse({ ...newCourse, instructor: e.target.value })} />
+      {/* ADD COURSE */}
+      <div className="bg-white p-6 rounded-xl shadow border mb-8">
+        <h3 className="font-semibold mb-4">
+          Add New Course
+        </h3>
 
-        <button onClick={handleAddCourse}>Add Course</button>
+        <input className="border p-2 w-full mb-2 rounded"
+          placeholder="Title"
+          value={newCourse.title}
+          onChange={(e) =>
+            setNewCourse({ ...newCourse, title: e.target.value })
+          }
+        />
+
+        <input className="border p-2 w-full mb-2 rounded"
+          placeholder="Description"
+          value={newCourse.description}
+          onChange={(e) =>
+            setNewCourse({ ...newCourse, description: e.target.value })
+          }
+        />
+
+        <input className="border p-2 w-full mb-2 rounded"
+          placeholder="Price"
+          value={newCourse.price}
+          onChange={(e) =>
+            setNewCourse({ ...newCourse, price: e.target.value })
+          }
+        />
+
+        <input className="border p-2 w-full mb-2 rounded"
+          placeholder="Image URL"
+          value={newCourse.image}
+          onChange={(e) =>
+            setNewCourse({ ...newCourse, image: e.target.value })
+          }
+        />
+
+        <input className="border p-2 w-full mb-4 rounded"
+          placeholder="Instructor"
+          value={newCourse.instructor}
+          onChange={(e) =>
+            setNewCourse({ ...newCourse, instructor: e.target.value })
+          }
+        />
+
+        <button
+          onClick={handleAddCourse}
+          className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+        >
+          Add Course
+        </button>
       </div>
 
-      <hr />
+      {/* COURSE LIST */}
+      <h3 className="font-semibold mb-4">
+        All Courses
+      </h3>
 
-      <h3>All Courses</h3>
-      {courses.map((course) => (
-        <div key={course.id} style={{ border: "1px solid black", marginBottom: "10px", padding: "10px" }}>
-          <h4>{course.title}</h4>
-          <p>{course.description}</p>
-          <p>₹{course.price}</p>
-          <img src={course.image} alt="" width="150" />
+      {courses.length === 0 ? (
+        <p>No courses added yet.</p>
+      ) : (
+        courses.map((course) => (
+          <div
+            key={course.id}
+            className="bg-white border rounded-xl p-4 mb-3 shadow-sm hover:shadow transition"
+          >
+            <h4 className="font-semibold">{course.title}</h4>
+            <p>{course.description}</p>
+            <p className="font-bold">₹{course.price}</p>
 
-          <button onClick={() => handleDeleteCourse(course.id)}>Delete</button>
-        </div>
-      ))}
+            {course.image && (
+              <img
+                src={course.image}
+                alt={course.title}
+                className="w-40 mt-2 rounded"
+              />
+            )}
+
+            <button
+              onClick={() => handleDeleteCourse(course.id)}
+              className="mt-3 text-sm text-red-600 hover:underline"
+            >
+              Delete
+            </button>
+          </div>
+        ))
+      )}
     </div>
   );
 };

@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase";
 import { getCartItems, setCartItems } from "../utils/cartStorage";
 
 export default function CourseDetails() {
@@ -10,38 +8,27 @@ export default function CourseDetails() {
   const [course, setCourse] = useState(null);
 
   useEffect(() => {
-    const fetchCourse = async () => {
-      const ref = doc(db, "courses", id);
-      const snap = await getDoc(ref);
-      if (snap.exists()) {
-        setCourse({ id: snap.id, ...snap.data() });
-      }
-    };
-    fetchCourse();
+    const courses =
+      JSON.parse(localStorage.getItem("courses")) || [];
+    const found = courses.find((c) => c.id === id);
+    setCourse(found || null);
   }, [id]);
 
   const addToCart = () => {
     const cart = getCartItems();
-
-    // prevent duplicates
     if (cart.some((item) => item.id === course.id)) {
       alert("Course already in cart");
       return;
     }
-
-    cart.push(course);
-    setCartItems(cart);
-
-    alert("Course added to cart");
+    setCartItems([...cart, course]);
     navigate("/cart");
   };
 
-  if (!course) return <p>Loading...</p>;
+  if (!course) return <p className="pt-28 text-center">Course not found</p>;
 
   return (
     <section className="pt-28 pb-20 bg-gray-50 min-h-screen">
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow">
-
         <img
           src={course.image}
           alt={course.title}
@@ -52,14 +39,19 @@ export default function CourseDetails() {
           {course.title}
         </h1>
 
-        <p className="text-gray-600 mb-2">Duration: {course.duration}</p>
+        {course.duration && (
+          <p className="text-gray-600 mb-2">
+            Duration: {course.duration}
+          </p>
+        )}
+
         <p className="text-xl font-semibold text-purple-700 mb-4">
           ₹{course.price}
         </p>
 
-        {course.rating && <p>⭐ {course.rating} / 5</p>}
-        {course.instructor && <p>👨‍🏫 {course.instructor}</p>}
-        {course.description && <p className="mt-4">{course.description}</p>}
+        {course.description && (
+          <p className="mt-4">{course.description}</p>
+        )}
 
         <button
           onClick={addToCart}

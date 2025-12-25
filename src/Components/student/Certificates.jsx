@@ -1,7 +1,4 @@
 import { useEffect, useState } from "react";
-import { auth, db } from "../../firebase";
-import { collection, getDocs } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
 
 export default function Certificates() {
   const [certs, setCerts] = useState([]);

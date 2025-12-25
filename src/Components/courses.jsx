@@ -1,29 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase";
+
+const STORAGE_KEY = "courses";
 
 export default function Courses() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const snapshot = await getDocs(collection(db, "courses"));
-        const list = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setCourses(list);
-      } catch (error) {
-        console.error("Error fetching courses:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    // 🔁 Load courses from localStorage
+    const storedCourses =
+      JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
-    fetchCourses();
+    setCourses(storedCourses);
+    setLoading(false);
   }, []);
 
   if (loading) {
@@ -44,18 +34,18 @@ export default function Courses() {
 
         {courses.length === 0 ? (
           <p className="text-center text-gray-500">
-            No courses available
+            No courses available. Please add courses from Admin panel.
           </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {courses.map(course => (
+            {courses.map((course) => (
               <div
                 key={course.id}
                 className="bg-white rounded-xl shadow hover:shadow-lg transition p-4 flex flex-col"
               >
                 <div className="h-36 mb-4 overflow-hidden rounded-xl">
                   <img
-                    src={course.image}
+                    src={course.image || "/placeholder.jpg"}
                     alt={course.title}
                     className="w-full h-full object-cover"
                   />
@@ -65,9 +55,14 @@ export default function Courses() {
                   {course.title}
                 </h3>
 
-                <p className="text-xs text-gray-500 mb-1">
-                  Duration: <span className="font-semibold">{course.duration}</span>
-                </p>
+                {course.duration && (
+                  <p className="text-xs text-gray-500 mb-1">
+                    Duration:{" "}
+                    <span className="font-semibold">
+                      {course.duration}
+                    </span>
+                  </p>
+                )}
 
                 <p className="text-purple-700 font-bold text-sm mb-4">
                   ₹{course.price}

@@ -1,39 +1,13 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { auth, db } from "../../firebase";
 
 export default function MyCourses() {
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMyCourses = async () => {
-      const user = auth.currentUser;
-
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      const snap = await getDocs(
-        collection(db, "users", user.uid, "enrollments")
-      );
-
-      const data = snap.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setCourses(data);
-      setLoading(false);
-    };
-
-    fetchMyCourses();
+    const data =
+      JSON.parse(localStorage.getItem("enrollments")) || [];
+    setCourses(data);
   }, []);
-
-  if (loading) {
-    return <p className="p-6">Loading enrolled courses...</p>;
-  }
 
   return (
     <div className="p-8">
@@ -53,7 +27,9 @@ export default function MyCourses() {
                 alt={course.title}
                 className="w-full h-40 object-cover rounded"
               />
-              <h2 className="mt-3 font-semibold">{course.title}</h2>
+              <h2 className="mt-3 font-semibold">
+                {course.title}
+              </h2>
               <p className="text-indigo-600 font-bold">
                 ₹{course.price}
               </p>

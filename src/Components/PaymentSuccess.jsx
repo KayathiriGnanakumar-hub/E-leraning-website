@@ -1,42 +1,37 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCartItems, clearCart } from "../utils/cartStorage";
-import { auth, db } from "../firebase";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 export default function PaymentSuccess() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const saveEnrollments = async () => {
-      const user = auth.currentUser;
-
-      if (!user) {
-        navigate("/login");
-        return;
-      }
-
+    const saveEnrollments = () => {
       const cartItems = getCartItems();
 
-      for (const course of cartItems) {
-        await setDoc(
-          doc(db, "users", user.uid, "enrollments", course.id),
-          {
-            courseId: course.id,
-            title: course.title,
-            image: course.image,
-            price: course.price,
-            enrolledAt: serverTimestamp(),
-          },
-          { merge: true }
-        );
-      }
+      const existingEnrollments =
+        JSON.parse(localStorage.getItem("enrollments")) || [];
+
+      const newEnrollments = cartItems.map((course) => ({
+        ...course,
+        progress: 0,
+        completed: false,
+        enrolledAt: new Date().toISOString(),
+      }));
+
+      localStorage.setItem(
+        "enrollments",
+        JSON.stringify([
+          ...existingEnrollments,
+          ...newEnrollments,
+        ])
+      );
 
       clearCart();
     };
 
     saveEnrollments();
-  }, [navigate]);
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-green-50">

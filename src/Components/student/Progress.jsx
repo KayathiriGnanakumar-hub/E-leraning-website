@@ -1,59 +1,33 @@
 import { useEffect, useState } from "react";
-import { auth, db } from "../../firebase";
-import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
 
 export default function Progress() {
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (!user) return;
+    // TEMP: get enrolled courses from localStorage
+    const enrolled =
+      JSON.parse(localStorage.getItem("enrollments")) || [];
 
-      const ref = collection(
-        db,
-        "users",
-        user.uid,
-        "enrolledCourses"
-      );
-
-      const snap = await getDocs(ref);
-      const data = snap.docs.map((d) => ({
-        id: d.id,
-        ...d.data(),
-      }));
-
-      setCourses(data);
-    });
-
-    return () => unsub();
+    setCourses(enrolled);
   }, []);
 
-  const markCompleted = async (courseId) => {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const ref = doc(
-      db,
-      "users",
-      user.uid,
-      "enrolledCourses",
-      courseId
+  const markCompleted = (courseId) => {
+    const updatedCourses = courses.map((course) =>
+      course.id === courseId
+        ? { ...course, progress: 100, completed: true }
+        : course
     );
 
-    await updateDoc(ref, {
-      progress: 100,
-      completed: true,
-    });
-
-    setCourses((prev) =>
-      prev.map((c) =>
-        c.id === courseId
-          ? { ...c, progress: 100, completed: true }
-          : c
-      )
+    setCourses(updatedCourses);
+    localStorage.setItem(
+      "enrollments",
+      JSON.stringify(updatedCourses)
     );
   };
+
+  if (courses.length === 0) {
+    return <p>No enrolled courses yet.</p>;
+  }
 
   return (
     <div>
@@ -67,7 +41,9 @@ export default function Progress() {
           className="bg-white p-5 rounded-xl shadow mb-4"
         >
           <div className="flex justify-between mb-2">
-            <h3 className="font-semibold">{course.title}</h3>
+            <h3 className="font-semibold">
+              {course.title}
+            </h3>
             <span className="text-indigo-600">
               {course.progress || 0}%
             </span>

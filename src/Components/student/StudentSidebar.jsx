@@ -1,29 +1,30 @@
 import { NavLink } from "react-router-dom";
 
-const linkClass =
-  "block px-4 py-2 rounded-lg font-medium transition hover:bg-indigo-100 hover:text-indigo-700";
+const base =
+  "block px-4 py-3 rounded-xl text-sm font-medium transition border-2";
 
-const activeClass =
-  "bg-indigo-600 text-white";
+const active =
+  "bg-white text-indigo-600 border-white shadow";
+
+const inactive =
+  "text-white border-indigo-300 hover:bg-indigo-500 hover:shadow";
 
 export default function StudentSidebar() {
   return (
-    <aside className="w-64 bg-white shadow-lg hidden md:block">
-      <div className="p-6 border-b">
-        <h2 className="text-xl font-bold text-indigo-600">
-          Student Panel
-        </h2>
-        <p className="text-sm text-gray-500">
-          Learning Dashboard
-        </p>
-      </div>
+    <aside
+      className="w-64"
+      style={{
+        minHeight: "calc(100vh - 100px)",
+        background: "linear-gradient(180deg, #5B21B6, #4F46E5)",
+      }}
+    >
+      <nav className="p-5 space-y-4">
 
-      <nav className="p-4 space-y-2">
         <NavLink
           to="/students"
           end
           className={({ isActive }) =>
-            `${linkClass} ${isActive ? activeClass : ""}`
+            `${base} ${isActive ? active : inactive}`
           }
         >
           Dashboard
@@ -32,7 +33,7 @@ export default function StudentSidebar() {
         <NavLink
           to="/students/courses"
           className={({ isActive }) =>
-            `${linkClass} ${isActive ? activeClass : ""}`
+            `${base} ${isActive ? active : inactive}`
           }
         >
           My Courses
@@ -41,7 +42,7 @@ export default function StudentSidebar() {
         <NavLink
           to="/students/progress"
           className={({ isActive }) =>
-            `${linkClass} ${isActive ? activeClass : ""}`
+            `${base} ${isActive ? active : inactive}`
           }
         >
           Progress
@@ -50,7 +51,7 @@ export default function StudentSidebar() {
         <NavLink
           to="/students/certificates"
           className={({ isActive }) =>
-            `${linkClass} ${isActive ? activeClass : ""}`
+            `${base} ${isActive ? active : inactive}`
           }
         >
           Certificates
@@ -59,11 +60,12 @@ export default function StudentSidebar() {
         <NavLink
           to="/students/internships"
           className={({ isActive }) =>
-            `${linkClass} ${isActive ? activeClass : ""}`
+            `${base} ${isActive ? active : inactive}`
           }
         >
           Internships
         </NavLink>
+
       </nav>
     </aside>
   );
